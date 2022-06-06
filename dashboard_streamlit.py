@@ -22,6 +22,7 @@ rows = 28
 n_cells = rows**2
 
 ### SIDEBAR ###
+st.sidebar.subheader("Settings")
 eggs_per_cell = st.sidebar.slider('Intended eggs per cell', 1, 20, 10)
 dispense_type = st.sidebar.selectbox('Dispense by', ('Volume', 'Number'), 
                                      help="'Volume' corresponds to a typical aliquoter in which eggs are randomly arranged in a reservoir from which aliquots of a fixed volume are taken, resulting in a variable number of eggs being dispensed into each cell (a Poisson process).\n'Number' aliquots a fixed number of eggs into each cell, the intended number of eggs into each cell.")
