@@ -18,11 +18,11 @@ st.set_page_config(
      initial_sidebar_state="expanded")
 
 
-rows = 28
-n_cells = rows**2
 
 ### SIDEBAR ###
 st.sidebar.header("Settings")
+rows = st.sidebar.slider('Number of rows in LRU', 14, 28, 28)
+n_cells = rows**2
 eggs_per_cell = st.sidebar.slider('Intended eggs per cell', 1, 20, 10)
 dispense_type = st.sidebar.selectbox('Dispense by', ('Volume', 'Number'), 
                                      help="'Volume' corresponds to a typical aliquoter in which eggs are randomly arranged in a reservoir from which aliquots of a fixed volume are taken, resulting in a variable number of eggs being dispensed into each cell (a Poisson process).\n'Number' aliquots a fixed number of eggs into each cell, the intended number of eggs into each cell.")
@@ -169,7 +169,7 @@ def sampling(n = 300):
     ax1.set_ylim([0,100])       
     ax1.set_yticks(np.arange(0, 100.1, 10))
     
-    spl = interpolate.splrep(densities_x, u_avg, s=1, k=3)
+    spl = interpolate.splrep(densities_x, u_avg, s=0.1, k=3)
     ys = interpolate.splev(densities_x, spl, der=0)
     ax1.plot(densities_x, ys, linestyle='-', linewidth=2)
     
