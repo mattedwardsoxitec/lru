@@ -148,28 +148,30 @@ def plot_LRU(results, stage):
 
 
 def sampling(n = 300):      
-    densities = [i for i in range(1, 17+1, 1) for _ in range(50)]   # First range gives numbers, second gives repeats
-    #densities = np.linspace(2, 15, n)
-    utilization = np.zeros(len(densities))
-    for i, density in enumerate(densities):
-        results = infest(density)
-        utilization[i] = results["utilization"]
+    repeats = 30
+    top = 17  
+    densities_x = np.arange(1, top+1)
+    densities = np.reshape(np.repeat(densities_x, repeats), (top, repeats))
+    utilizations = np.zeros(np.shape(densities))
+    for (x, y), density in np.ndenumerate(densities):
+        utilizations[x, y] = infest(density)["utilization"]
+    u_avg = np.mean(utilizations, 1)
     
-    ## PLOT ###
+     ## PLOT ###
     fig, ax1 = plt.subplots(figsize=(9, 6))
     
     ax1.set_xlabel('Intended eggs per cell')
     ax1.set_xticks(np.arange(1, 17.1, 1))
     
     ax1.set_ylabel('Pupal yield')
-    ax1.scatter(densities, utilization, alpha=0.15)
+    ax1.scatter(densities, utilizations, alpha=0.15)
     ax1.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
     ax1.set_ylim([0,100])       
     ax1.set_yticks(np.arange(0, 100.1, 10))
     
-    spl = interpolate.splrep(densities, utilization, s=20000, k=3)
-    ys = interpolate.splev(densities, spl, der=0)
-    ax1.plot(densities, ys, linestyle='-', linewidth=2)
+    spl = interpolate.splrep(densities_x, u_avg, s=1, k=3)
+    ys = interpolate.splev(densities_x, spl, der=0)
+    ax1.plot(densities_x, ys, linestyle='-', linewidth=2)
     
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
     plt.grid(alpha = 0.2)  # Show grid lines
