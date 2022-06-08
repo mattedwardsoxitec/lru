@@ -21,7 +21,7 @@ with st.sidebar:
          options=np.square(np.arange(14, 28+1, 2)), value=784)
     rows = np.sqrt(n_cells).astype(int)
     eggs_per_cell = st.slider('Intended eggs per cell', 1, 20, 10)
-    dispense_type = st.selectbox('Dispense by', ('Volume', 'Number'), 
+    dispense_type = st.radio('Dispense by', ('Volume', 'Number'), 
                                          help="'Volume' corresponds to a typical aliquoter in which eggs are randomly arranged in a reservoir from which aliquots of a fixed volume are taken, resulting in a variable number of eggs being dispensed into each cell (a Poisson process).\n'Number' aliquots by counting eggs.")
     if dispense_type == 'Volume':
         accuracy = 0.01/2 * st.slider('Accuracy of droplet volume', 0, 50, 15, format="±%d %%", 
@@ -35,10 +35,10 @@ with st.sidebar:
     st.subheader("Hatching & transgene expression")
     P_hatch = 0.01 * st.slider('Hatch rate', 1, 100, 50, format="%d %%")
     P_male = 0.01 * st.slider('Male proportion', 1, 100, 50, format="%d %%")
-    dox = st.checkbox('Doxycycline', value=False)
+    dox = st.radio('Doxycycline', ('On dox', 'Off dox'), index=1)
     
     st.subheader("Larval interaction")
-    behaviour = st.selectbox('Larval behaviour', ('Cannibalistic', 'Aggressive'), 
+    behaviour = st.radio('Larval behaviour', ('Cannibalistic', 'Aggressive'), 
                                          help="'Cannibalistic' results in a maximum of one larva surviving per cell; 'Aggressive' results in larvae that are not alone in their cell having a lower probability of survival.")
     if behaviour == 'Aggressive':
         f_aggression = st.slider('Aggression factor', 1, 4, 2,
@@ -90,7 +90,7 @@ def infest(eggs_per_cell):
 
     larvae1 = np.random.binomial(eggs.astype(int), P_hatch)  # hatch eggs 
     
-    if(dox):
+    if(dox=='On dox'):
         larvae2 = larvae1
     else:
         larvae2 = np.random.binomial(larvae1.astype(int), P_male)  # females die
@@ -179,7 +179,7 @@ def plot_performance():
     ## PLOT ###
     fig, ax1 = plt.subplots(figsize=(9, 6))
     
-    ax1.set_xlabel('Actual eggs per cell')
+    ax1.set_xlabel('Average eggs per cell')
     ax1.set_xticks(np.arange(1, 100, 1))  # Can go to 100, only the required ticks will be used. Essentially sets tick spacing at 1
     ax1.set_xlim([0, 20.9])
     
@@ -190,7 +190,7 @@ def plot_performance():
     ax1.set_yticks(np.arange(0, 100.1, 10))
     
     #LOWESS line of best fit
-    l = sm.nonparametric.lowess(exog=eggs, endog=utilizations, frac=0.2)
+    l = sm.nonparametric.lowess(exog=eggs, endog=utilizations, frac=0.15)
     ax1.plot(l[:, 0], l[:, 1], linestyle='-', linewidth=2)
 
     ax2 = ax1.twinx()
