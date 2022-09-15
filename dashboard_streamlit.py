@@ -18,7 +18,7 @@ with st.sidebar:
     st.title("Settings")
     st.subheader("Aliquoting")
     n_cells = st.select_slider('Number of cells in grid',
-         options=np.square(np.arange(14, 28+1, 2)), value=784)
+         options=np.square(np.arange(4, 28+1, 2)), value=784)
     rows = np.sqrt(n_cells).astype(int)
     eggs_per_cell = st.slider('Intended eggs per cell', 1, 20, 10)
     dispense_type = st.radio('Dispense by', ('Volume', 'Number'), 
